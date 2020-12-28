@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_reader/pages/direcciones_page.dart';
 import 'package:qr_reader/pages/mapas_page.dart';
 import 'package:qr_reader/providers/db_provider.dart';
+import 'package:qr_reader/providers/scan_list_provider.dart';
 import 'package:qr_reader/providers/ui_provider.dart';
 import 'package:qr_reader/widgets/custom_navigatorbar.dart';
 import 'package:qr_reader/widgets/scan_button.dart';
@@ -15,7 +16,13 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         title: Text('Historial'),
         actions: [
-          IconButton(icon: Icon(Icons.delete_forever), onPressed: () {})
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            onPressed: () {
+              Provider.of<ScanListProvider>(context, listen: false)
+                  .borrarTodos();
+            },
+          )
         ],
       ),
       body: _HomePageBody(),
@@ -42,10 +49,16 @@ class _HomePageBody extends StatelessWidget {
     //DBProvider.db.getAllScans().then((value) => print(value));
     //DBProvider.db.deleteAllScans().then((value) => print(value));
 
+    //USAR EL SCANLISTPROVIDER
+    final scanListProvider =
+        Provider.of<ScanListProvider>(context, listen: false);
+
     switch (currentIndex) {
       case 0:
+        scanListProvider.cargarScansPorTipo('geo');
         return MapasPage();
       case 1:
+        scanListProvider.cargarScansPorTipo('http');
         return DireccionesPage();
       default:
         return MapasPage();
